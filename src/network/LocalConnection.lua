@@ -15,6 +15,7 @@ end
 
 function LocalConnection:pop()
 	local message = table.remove(self._queue)
+	if not message then return nil end
 	return message.type.opcode, message.type.associate_values(message.values)
 end
 

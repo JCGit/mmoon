@@ -1,4 +1,4 @@
-local Chunk = require "Chunk"
+local Chunk = require "grid.Chunk"
 
 local Grid = require"util.Class"(function(self)
 	self._owners = {}

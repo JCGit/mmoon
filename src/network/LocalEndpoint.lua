@@ -1,4 +1,4 @@
-local LocalConnection = require "LocalConnection"
+local LocalConnection = require "network.LocalConnection"
 
 local LocalEndpoint = require"util.Class"(function(self, listener)
 	self._listener = listener
