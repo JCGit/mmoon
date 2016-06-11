@@ -1,6 +1,7 @@
 local util = require "util.Util"
 local log = require "log.Logger"
 local NodeProtocol = require "grid.NodeProtocol"
+local MessageHandler = require "network.MessageHandler"
 
 local Node = require "util.Class"(function(self, id, host, grid_endpoint)
 	self.id = id
@@ -13,14 +14,15 @@ local Node = require "util.Class"(function(self, id, host, grid_endpoint)
 	-- the send queue could be processed in the networking thread as soon
 	-- as it connects
 	self._grid_conn:push(NodeProtocol.register(id, host))
+
+	self._handle_messages = MessageHandler(NodeProtocol)
+	self._handle_messages[NodeProtocol.welcome] = function(_, c, msg)
+		log.success(self._log_id, "Connected to grid system.")
+	end
 end)
 
 function Node:tick()
-	for opcode, message in util.pop_all(self._grid_conn) do
-		if opcode == NodeProtocol.welcome.opcode then
-			log.success(self._log_id, "Connected to grid system.")
-		end
-	end
+	self:_handle_messages(self._grid_conn)
 end
 
 return Node
