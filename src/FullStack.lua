@@ -1,11 +1,12 @@
+local log = require "log.Logger"
 local LocalListener = require "network.LocalListener"
 local GridServer = require "grid.GridServer"
 
-print("Starting full server stack...")
+log.info("Starting full server stack...")
 
 local grid = GridServer.new(LocalListener.new())
 
-print("Initialized.")
+log.info("Initialized.")
 
 -- Protected call to catch ctrl-c and perform graceful shutdown
 pcall(function()
@@ -14,5 +15,5 @@ pcall(function()
 	end
 end)
 
-print("Shutting down.")
+log.info("Shutting down.")
 
