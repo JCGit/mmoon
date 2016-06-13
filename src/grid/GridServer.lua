@@ -1,7 +1,7 @@
 local util = require "util.Util"
-local MessageHandler = require "network.MessageHandler"
 local log = require "log.Logger"
-local NodeProtocol = require "grid.NodeProtocol"
+local MessageHandler = require "network.MessageHandler"
+local Protocol = require "proto.NodeGridProtocol"
 local Grid = require "grid.Grid"
 
 local GridServer = require"util.Class"(function(self, listener)
@@ -10,8 +10,8 @@ local GridServer = require"util.Class"(function(self, listener)
 	self._nodes = {}
 	self._pending_nodes = {}
 
-	self._handle_messages = MessageHandler(NodeProtocol)
-	self._handle_messages[NodeProtocol.register] = self._on_register
+	self._handle_messages = MessageHandler(Protocol)
+	self._handle_messages[Protocol.register] = self._on_register
 end)
 
 function GridServer:_assign_node(node, x, y)
@@ -22,7 +22,7 @@ function GridServer:_on_register(node, message)
 	self._nodes[message.id] = node
 	log.info(string.format("Node %s/%s registered.",
 			message.host, message.id))
-	node:push(NodeProtocol.welcome())
+	node:push(Protocol.welcome())
 end
 
 function GridServer:tick()

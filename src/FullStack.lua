@@ -2,7 +2,7 @@ local log = require "log.Logger"
 local LocalListener = require "network.LocalListener"
 local LocalEndpoint = require "network.LocalEndpoint"
 local GridServer = require "grid.GridServer"
-local Node = require "grid.Node"
+local Node = require "node.Node"
 
 log.info("Starting full server stack...")
 
