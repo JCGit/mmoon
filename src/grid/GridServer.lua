@@ -14,6 +14,10 @@ local GridServer = require"util.Class"(function(self, listener)
 	self._handle_messages[NodeProtocol.register] = self._on_register
 end)
 
+function GridServer:_assign_node(node, x, y)
+	local last_owner = self._grid:assign_node(node, x, y)
+end
+
 function GridServer:_on_register(node, message)
 	self._nodes[message.id] = node
 	log.info(string.format("Node %s/%s registered.",
