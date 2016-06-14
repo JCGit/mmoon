@@ -1,13 +1,9 @@
-local LocalConnection = require "network.LocalConnection"
-
 local LocalEndpoint = require"util.Class"(function(self, listener)
 	self._listener = listener
 end)
 
 function LocalEndpoint:connect()
-	local local_, remote = LocalConnection.create_pair()
-	table.insert(self._listener._queue, remote)
-	return local_
+	return self._listener:connect()
 end
 
 return LocalEndpoint

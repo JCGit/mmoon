@@ -1,9 +1,13 @@
-local LocalConnection = require("util.Class")(function(self)
+local LocalConnection = require("util.Class")(function(self,
+		protocol)
 	self._queue = {}
+	self.protocol = protocol
 end)
 
-function LocalConnection.create_pair()
-	local conn1, conn2 = LocalConnection.new(), LocalConnection.new()
+function LocalConnection.create_pair(protocol)
+	local conn1, conn2 =
+		LocalConnection.new(protocol),
+		LocalConnection.new(protocol)
 	conn1._remote = conn2
 	conn2._remote = conn1
 	return conn1, conn2
