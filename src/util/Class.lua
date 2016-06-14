@@ -1,25 +1,32 @@
-local function Class(constructor, parent)
-	local class = {}
+local Class = {
+	VIRTUAL = function() error("unimplemented virtual function: " ..
+		debug.getinfo(1, "n").name) end
+}
 
-	if parent then
-		class = parent.new()
-	end
+setmetatable(Class, {
+	__call = function(_, constructor, parent)
+		local class = {}
 
-	class.__index = class
-
-	function class.new(...)
-		local object = {}
-		setmetatable(object, class)
-		
-		if constructor then
-			constructor(object, ...)
+		if parent then
+			class = parent.new()
 		end
 
-		return object
-	end
+		class.__index = class
 
-	return class
-end
+		function class.new(...)
+			local object = {}
+			setmetatable(object, class)
+			
+			if constructor then
+				constructor(object, ...)
+			end
+
+			return object
+		end
+
+		return class
+	end
+})
 
 return Class
 
