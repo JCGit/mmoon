@@ -15,7 +15,7 @@ local Node = require "util.Class"(function(self, id, host, grid_endpoint)
 	-- as it connects
 	self._grid_conn:push(Protocol.register(id, host))
 
-	self._handle_messages = MessageHandler(Protocol)
+	self._handle_messages = MessageHandler()
 	self._handle_messages[Protocol.welcome] = function(_, c, msg)
 		log.success(self._log_id, "Connected to grid system.")
 	end

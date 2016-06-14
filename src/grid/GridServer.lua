@@ -10,7 +10,7 @@ local GridServer = require"util.Class"(function(self, listener)
 	self._nodes = {}
 	self._pending_nodes = {}
 
-	self._handle_messages = MessageHandler(Protocol)
+	self._handle_messages = MessageHandler()
 	self._handle_messages[Protocol.register] = self._on_register
 end)
 

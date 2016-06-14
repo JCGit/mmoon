@@ -1,6 +1,6 @@
 local util = require "util.Util"
 
-return function(protocol)
+return function()
 	local handler = {}
 
 	setmetatable(handler, {
