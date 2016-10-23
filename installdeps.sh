@@ -7,5 +7,6 @@ function install
 }
 
 # Add "install <rock>" here
+install "lua-cjson"
 
 echo "Done!"

@@ -10,9 +10,12 @@ local grid_listener = LocalListener.new()
 local grid_endpoint = LocalEndpoint.new(grid_listener)
 local grid = GridServer.new(grid_listener)
 
+local node1Listener = LocalListener.new()
+local node2Listener = LocalListener.new()
+
 local nodes = {
-	Node.new(1, "november", grid_endpoint),
-	Node.new(2, "november", grid_endpoint)
+	Node.new(1, "november", node1Listener, grid_endpoint),
+	Node.new(2, "november", node2Listener, grid_endpoint)
 }
 
 log.info("Initialized.")
