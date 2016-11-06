@@ -4,11 +4,11 @@ return function()
 	local handler = {}
 
 	setmetatable(handler, {
-		__call = function(_, self, conn)
+		__call = function(_, self, conn, id)
 			assert(conn)
 			for opcode, message in util.pop_all(conn) do
 				if rawget(handler, opcode) then
-					handler[opcode](self, conn, message)
+					handler[opcode](self, conn, message, id)
 				end
 			end
 		end,
