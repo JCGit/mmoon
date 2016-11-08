@@ -8,7 +8,14 @@ return function()
 			assert(conn)
 			for opcode, message in util.pop_all(conn) do
 				if rawget(handler, opcode) then
-					handler[opcode](self, conn, message, id)
+					-- TODO: document
+					-- if a truthy value is returned, stop handling any more
+					-- messages for this connection (so that we can switch
+					-- handlers -- and thus protocols -- as response to
+					-- a message)
+					if handler[opcode](self, conn, message, id) then
+						return
+					end
 				end
 			end
 		end,
