@@ -54,6 +54,7 @@ end
 log.info("Initialized.")
 
 -- Protected call to catch ctrl-c and perform graceful shutdown
+local exit_code = 0
 xpcall(function()
 	while true do
 		world:tick()
@@ -69,7 +70,9 @@ xpcall(function()
 end, function(err)
 	log.err(err)
 	log.err(debug.traceback())
+	exit_code = 1
 end)
 
 log.info("Shutting down.")
+os.exit(exit_code)
 
