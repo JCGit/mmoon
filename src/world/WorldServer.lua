@@ -4,12 +4,14 @@ local MessageHandler = require "network.MessageHandler"
 local NodeProtocol = require "proto.Node2World"
 local ServiceProtocol = require "proto.Service"
 local ServiceType = require "proto.ServiceType"
+local Console = require "world.Console"
 
 local WorldServer = require"util.Class"(function(self, listener, config)
 	self._listener = listener
 	self._config = config
 
-	log.notice(string.format("Starting world server on %s.", listener.endpoint.address))
+	log.notice(string.format("Starting world server on %s.",
+		listener.endpoint.address))
 
 	-- services
 	self._proxies = {}
@@ -23,7 +25,12 @@ local WorldServer = require"util.Class"(function(self, listener, config)
 		MessageHandler(),
 		MessageHandler()
 
-	self._handle_service_messages[ServiceProtocol.authenticate] = self._on_authenticate
+	self._handle_service_messages[ServiceProtocol.authenticate] =
+		self._on_authenticate
+
+	-- admin command line (port 4444)
+	self._console = Console.new(
+		{ world = self })
 end)
 
 function WorldServer:_on_authenticate(service, message, index)
@@ -93,6 +100,9 @@ function WorldServer:tick()
 	for id, node in pairs(self._nodes) do
 		self:_handle_node_messages(node, id)
 	end
+
+	-- admin command line
+	self._console:update()
 end
 
 -- removes processed services from the list of services pending 
