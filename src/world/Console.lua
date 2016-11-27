@@ -1,8 +1,15 @@
 local socket = require "socket"
 local util = require "util.Util"
+local IPv4Address = require "network.IPv4Address"
 
 local Console = require "util.Class"(function(self, env)
 	self._env = env
+
+	self._env.list = function(list)
+		for i, item in ipairs(list) do
+			env.print("*", tostring(item))
+		end
+	end
 
 	self._listener = socket.tcp()
 	self._listener:setoption("reuseaddr", true)
@@ -50,6 +57,8 @@ function Console:_command(client, command)
 	if command:sub(1,1) == "=" then
 		command = string.format("return (%s)", command:sub(2))
 	end
+
+	self._env.print = function (...) client.socket:send(table.concat({...}, " ") .. "\n") end
 
 	local f, err = load(command, "command", "t", self._env)
 	if not f then

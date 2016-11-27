@@ -6,6 +6,7 @@ local util = require "util.Util"
 local PlayerConnection = require "proxy.PlayerConnection"
 local Message = require "network.Message"
 local NodeType = require "node.NodeType"
+local WorldServiceProtocol = require "proto.Node2World"
 
 
 local ProxyNode = require "util.Class"(function(self, node, config, listener)
@@ -35,6 +36,11 @@ function ProxyNode:tick()
 	for i, client in ipairs(self._clients) do
 		client:tick()
 	end
+end
+
+function ProxyNode:on_connected(world_server)
+	world_server:push(WorldServiceProtocol.register_proxy(
+		self._listener.endpoint.address.binary))
 end
 
 return ProxyNode

@@ -5,6 +5,7 @@ local NodeProtocol = require "proto.Node2World"
 local ServerProtocol = require "proto.Server"
 local ServerType = require "proto.ServerType"
 local Console = require "world.Console"
+local IPv4Address = require "network.IPv4Address"
 
 local WorldService = require"util.Class"(function(self, listener, config)
 	self._listener = listener
@@ -27,6 +28,9 @@ local WorldService = require"util.Class"(function(self, listener, config)
 
 	self._handle_server_messages[ServerProtocol.authenticate] =
 		self._on_authenticate
+
+	self._handle_node_messages[NodeProtocol.register_proxy] =
+		self._on_register_proxy
 
 	-- admin command line (port 4444)
 	self._console = Console.new(
@@ -63,6 +67,12 @@ function WorldService:_on_authenticate(server, message, index)
 
 	log.info(string.format("%s %s/%s authenticated.",
 			ServerType.tostring(message.type), message.host, message.id))
+end
+
+function WorldService:_on_register_proxy(c, msg)
+	table.insert(self._proxies, IPv4Address.new(msg.address))
+	log.info(string.format("Proxy registered: %s",
+		IPv4Address.new(msg.address)))
 end
 
 function WorldService:_welcome_node(node, message, index)
@@ -117,7 +127,8 @@ function WorldService:_remove_authenticated_servers()
 		local new_pending_servers = {}
 		for i=1, length do
 			if self._pending_servers[i] then
-				new_pending_servers[#new_pending_servers] = self._pending_servers[i]
+				new_pending_servers[#new_pending_servers] =
+					self._pending_servers[i]
 			end
 		end
 

@@ -1,7 +1,8 @@
 #!/bin/bash
 
 if [ "$1" == "tmux" ]; then
-	tmux split-window -h sh $0 console
+	tmux split-window -h -p 30 sh $0 console
+
 	cd src
 	lua FullStack.lua
 
