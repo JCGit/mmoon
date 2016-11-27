@@ -1,17 +1,16 @@
 local log = require "log.Logger"
 local LocalListener = require "network.LocalListener"
 local LocalEndpoint = require "network.LocalEndpoint"
-local WorldServer = require "world.WorldServer"
+local WorldService = require "world.WorldService"
 local Node = require "node.Node"
-local Proxy = require "proxy.Proxy"
+local SimulationNode = require "node.SimulationNode"
+local ProxyNode = require "proxy.ProxyNode"
 
 log.info("Starting full server stack...")
 
 -- Network endpoints/listeners
 local world_listener = LocalListener.new()
 local world_endpoint = world_listener.endpoint
-local node1Listener = LocalListener.new()
-local node2Listener = LocalListener.new()
 
 -- Config
 local NodeConfig = {
@@ -23,13 +22,7 @@ local NodeConfig = {
 	}
 }
 
-local ProxyServer = {
-	world = {
-		address = world_endpoint.address
-	},
-	security = {
-		key = "1234567890"
-	}
+local ProxyConfig = {
 }
 
 local WorldConfig = {
@@ -39,16 +32,30 @@ local WorldConfig = {
 }
 
 -- Servers & nodes
-local world = WorldServer.new(world_listener, WorldConfig)
+local world = WorldService.new(world_listener, WorldConfig)
 local nodes = {}
-local proxies = {}
+--local proxies = {}
 
 for i=1,2 do
-	table.insert(nodes, Node.new(i, "november", LocalListener.new(), NodeConfig))
+	table.insert(nodes, Node.new(
+		i,
+		"november",
+		LocalListener.new(),
+		NodeConfig,
+		SimulationNode
+		))
 end
 
 for i=1,2 do
-	table.insert(proxies, Proxy.new(1, LocalListener.new(), ProxyConfig))
+	table.insert(nodes, Node.new(
+		i+2,
+		"november",
+		LocalListener.new(),
+		NodeConfig,
+		ProxyNode,
+		ProxyConfig,
+		LocalListener.new()
+		))
 end
 
 log.info("Initialized.")
@@ -61,10 +68,6 @@ xpcall(function()
 
 		for i, node in ipairs(nodes) do
 			node:tick()
-		end
-
-		for i, proxy in ipairs(nodes) do
-			proxy:tick()
 		end
 	end
 end, function(err)
