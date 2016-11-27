@@ -4,7 +4,7 @@ return function()
 	local handler = {}
 
 	setmetatable(handler, {
-		__call = function(_, self, conn, id)
+		__call = function(_, self, conn, ...)
 			assert(conn)
 			for opcode, message in util.pop_all(conn) do
 				if rawget(handler, opcode) then
@@ -13,7 +13,7 @@ return function()
 					-- messages for this connection (so that we can switch
 					-- handlers -- and thus protocols -- as response to
 					-- a message)
-					if handler[opcode](self, conn, message, id) then
+					if handler[opcode](self, conn, message, ...) then
 						return
 					end
 				end
