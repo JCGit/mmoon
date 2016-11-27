@@ -5,6 +5,7 @@ local WorldService = require "world.WorldService"
 local Node = require "node.Node"
 local SimulationNode = require "node.SimulationNode"
 local ProxyNode = require "proxy.ProxyNode"
+local TestClient = require "client.TestClient"
 
 log.info("Starting full server stack...")
 
@@ -46,7 +47,19 @@ for i=1,2 do
 		))
 end
 
-for i=1,2 do
+local proxy_listener = LocalListener.new()
+local proxy_endpoint = proxy_listener.endpoint
+
+table.insert(nodes, Node.new(
+	3,
+	"november",
+	LocalListener.new(),
+	NodeConfig,
+	ProxyNode,
+	ProxyConfig,
+	proxy_listener))
+
+--[[for i=1,2 do
 	table.insert(nodes, Node.new(
 		i+2,
 		"november",
@@ -56,7 +69,9 @@ for i=1,2 do
 		ProxyConfig,
 		LocalListener.new()
 		))
-end
+end]]
+
+local test_client = TestClient.new(proxy_endpoint)
 
 log.info("Initialized.")
 
@@ -69,6 +84,8 @@ xpcall(function()
 		for i, node in ipairs(nodes) do
 			node:tick()
 		end
+
+		test_client:tick()
 	end
 end, function(err)
 	log.err(err)
