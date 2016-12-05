@@ -1,2 +1,2 @@
-return require "util.Enum" ("WORLD", "NODE", "PROXY")
+return require "util.Enum" ("WORLD", "NODE")
 
